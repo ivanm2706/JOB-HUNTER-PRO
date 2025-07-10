@@ -1,69 +1,79 @@
-# React + TypeScript + Vite
+💼 Job Hunter Pro
+Job Hunter Pro is a personal job application tracker built with React. It helps you stay organized during your job search by allowing you to log, edit, and track the status of your applications in one place.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🚀 Features
+🔐 User authentication (Login/Register with validation)
 
-Currently, two official plugins are available:
+📋 Add and manage job applications
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+📝 Edit or delete submitted jobs
 
-## Expanding the ESLint configuration
+📊 View application statistics with interactive charts
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+🔍 Search job listings (custom or via API)
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+✅ Filter by status: applied, interview, rejected
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+📈 Graphs showing application progress
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+🧠 Smart UX with responsive design and animations
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+💾 Data persistence (local or via API)
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+🛠️ Technologies Used
+Stack Details
+Frontend React, TypeScript, Vite
+State Redux Toolkit, Redux Persist
+Routing React Router
+Forms Formik + Yup for form validation
+Styles Bootstrap 5 + Custom CSS
+Charts Recharts (BarChart for job stats)
+Animation Framer Motion
+API Mocked with json-server or extendable
+Hosting Ready for deployment on Netlify/Vercel
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+📁 Folder Structure
+bash
+Copy
+Edit
+src/
+├── app/ # Redux store config
+├── components/ # Navbar, JobCard, JobStats, etc.
+├── features/ # authSlice, jobSlice
+├── pages/ # Login, Register, Dashboard, Search, AddJob, EditJob
+├── types/ # Shared TypeScript types
+├── utils/ # API helper, constants
+✅ Usage
+Clone the repo:
+
+bash
+Copy
+Edit
+git clone https://github.com/yourname/job-hunter-pro.git
+cd job-hunter-pro
+Install dependencies:
+
+bash
+Copy
+Edit
+npm install
+Run local server (with mock API):
+
+bash
+Copy
+Edit
+npm run dev
+(Optional) Start json-server for API:
+
+bash
+Copy
+Edit
+json-server --watch db.json --port 5000
+📌 Future Improvements
+Add JWT authentication and backend API
+
+Calendar for interviews / reminders
+
+Export to CSV / Excel
+
+Dark mode support
