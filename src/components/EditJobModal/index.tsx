@@ -6,9 +6,8 @@ import type { Job } from '../../types/JobType';
 type Props = {
   show: boolean;
   onClose: () => void;
-  job: Job;
+  job: Job | null;
   onSave: (updatedJob: Job) => void;
-  isSaving: boolean;
 };
 
 const EditJobSchema = Yup.object().shape({
@@ -17,20 +16,23 @@ const EditJobSchema = Yup.object().shape({
   status: Yup.string().oneOf(['applied', 'interview', 'rejected']).required('Status is required'),
 });
 
-export default function EditJobModal({ show, onClose, job, onSave, isSaving }: Props) {
+export default function EditJobModal({ show, onClose, job, onSave }: Props) {
+  const handleSubmit = async (value: Job) => {
+    try {
+      await onSave(value);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      onClose();
+    }
+  };
+
   return (
     <Modal show={show} onHide={onClose} centered>
       <Modal.Header closeButton>
         <Modal.Title>Edit Job</Modal.Title>
       </Modal.Header>
-      <Formik
-        initialValues={job}
-        validationSchema={EditJobSchema}
-        onSubmit={(values) => {
-          onSave(values);
-          onClose();
-        }}
-      >
+      <Formik initialValues={job as Job} validationSchema={EditJobSchema} onSubmit={handleSubmit}>
         {({ isSubmitting }) => (
           <Form>
             <Modal.Body>
@@ -62,7 +64,7 @@ export default function EditJobModal({ show, onClose, job, onSave, isSaving }: P
                 Cancel
               </Button>
               <Button type="submit" variant="primary" disabled={isSubmitting}>
-                {isSaving ? (
+                {isSubmitting ? (
                   <>
                     <Spinner animation="border" size="sm" className="me-2" />
                     Saving...

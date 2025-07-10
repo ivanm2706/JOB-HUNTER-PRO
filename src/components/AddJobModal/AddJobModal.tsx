@@ -1,13 +1,12 @@
 import { Modal, Button, Form as BSForm } from 'react-bootstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage, type FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import { v4 as uuidv4 } from 'uuid';
 import type { Job } from '../../types/JobType';
 
 type Props = {
   show: boolean;
   onClose: () => void;
-  onAdd: (newJob: Job) => void;
+  onAdd: (newJob: Omit<Job, 'id' | 'createdAt'>) => void;
 };
 
 const AddJobSchema = Yup.object().shape({
@@ -17,6 +16,23 @@ const AddJobSchema = Yup.object().shape({
 });
 
 export default function AddJobModal({ show, onClose, onAdd }: Props) {
+  const handleAddJob = async (values: Partial<Job>, actions: FormikHelpers<Partial<Job>>) => {
+    const newJob: Omit<Job, 'id' | 'createdAt'> = {
+      position: values.position || '',
+      company: values.company || '',
+      status: values.status as Job['status'],
+    };
+
+    try {
+      await onAdd(newJob);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      actions.resetForm();
+      onClose();
+      actions.setSubmitting(false);
+    }
+  };
   return (
     <Modal show={show} onHide={onClose} centered>
       <Modal.Header closeButton>
@@ -25,18 +41,7 @@ export default function AddJobModal({ show, onClose, onAdd }: Props) {
       <Formik
         initialValues={{ position: '', company: '', status: 'applied' }}
         validationSchema={AddJobSchema}
-        onSubmit={(values, actions) => {
-          const newJob: Job = {
-            id: +uuidv4(),
-            position: values.position,
-            company: values.company,
-            status: values.status as Job['status'],
-            createdAt: new Date().toISOString(),
-          };
-          onAdd(newJob);
-          actions.resetForm();
-          onClose();
-        }}
+        onSubmit={handleAddJob}
       >
         {({ isSubmitting }) => (
           <Form>

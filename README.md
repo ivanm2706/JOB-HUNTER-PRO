@@ -77,3 +77,5 @@ Calendar for interviews / reminders
 Export to CSV / Excel
 
 Dark mode support
+
+added dashboard pages, the ability to delete, add, edit vacancies and the ability to search

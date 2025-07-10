@@ -15,8 +15,6 @@ export default function Login() {
     values: { email: string; password: string },
     actions: FormikHelpers<{ email: string; password: string }>,
   ) => {
-    console.log('login values', values);
-    // api request
     if (values.email === 'admin@mail.com' && values.password === '123456') {
       actions.setStatus({ success: 'Login successful!' });
     } else {
