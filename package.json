@@ -6,20 +6,25 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "prettier": "prettier src --write",
     "preview": "vite preview",
     "prepare": "husky install"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "@reduxjs/toolkit": "^2.8.2",
     "axios": "^1.10.0",
     "bootstrap": "^5.3.7",
     "formik": "^2.4.6",
     "framer-motion": "^12.23.0",
     "react": "^19.1.0",
+    "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.3",
+    "recharts": "^3.1.0",
     "redux": "^5.0.1",
     "redux-persist": "^6.0.0",
     "yup": "^1.6.1"
@@ -42,6 +47,7 @@
     "husky": "^8.0.0",
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
+    "sass": "^1.89.2",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.35.1",
     "vite": "^7.0.3"

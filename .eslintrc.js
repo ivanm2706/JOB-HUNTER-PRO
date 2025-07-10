@@ -23,6 +23,7 @@ module.exports = {
   ],
   plugins: ['react', 'jsx-a11y', 'import', '@typescript-eslint'],
   rules: {
+    'no-console': 'warn',
     'eol-last': ['error', 'always'], // 👈 авто-перенос строки в конце
     'react/react-in-jsx-scope': 'off', // для React 17+
     'import/order': ['warn', { groups: [['builtin', 'external', 'internal']] }],
