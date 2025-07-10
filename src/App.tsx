@@ -3,12 +3,13 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
     <div className="container">
       <Routes>
-        <Route path="*" element={<>not found</>} />
+        <Route path="*" element={<NotFound />} />
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
