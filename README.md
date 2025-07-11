@@ -72,10 +72,18 @@ json-server --watch db.json --port 5000
 📌 Future Improvements
 Add JWT authentication and backend API
 
-Calendar for interviews / reminders
+structure
 
-Export to CSV / Excel
+src:
 
-Dark mode support
-
-added dashboard pages, the ability to delete, add, edit vacancies and the ability to search
+- app (hooks.ts, store.ts)
+- components(AddJobModal....)
+  -features(job/jobsSlice.ts)
+  -images
+  -json(mockData)
+  -pages(Home.tsx...)
+- styles
+- types
+- utils(filtredJobs.ts)
+  App.tsx
+  main.tsx

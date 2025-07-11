@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import type { Job } from '../../types/JobType';
-import { addJobAPI, deleteJobAPI, getJobs, updateJobAPI } from './jobsAPI';
 interface JobsState {
   jobs: Job[];
   loading: boolean;
@@ -13,12 +12,20 @@ const initialState: JobsState = {
   error: null,
 };
 
+const URL = 'http://localhost:5000/api/jobs';
+
 export const fetchJobs = createAsyncThunk<Job[], void, { rejectValue: string }>(
   'jobs/fetchJobs',
   async (_, thunkAPI) => {
     try {
-      const response = await getJobs();
-      return response;
+      const response = await fetch(URL);
+
+      if (!response.ok) {
+        throw new Error('can not get jobs');
+      }
+
+      const data = await response.json();
+      return data;
     } catch (error) {
       return thunkAPI.rejectWithValue((error as Error).message);
     }
@@ -29,7 +36,14 @@ export const deleteJob = createAsyncThunk<number, number>(
   'jobs/deleteJob',
   async (id, thunkAPI) => {
     try {
-      await deleteJobAPI(id);
+      const response = await fetch(`${URL}/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('failed to delete');
+      }
+
       return id;
     } catch (error) {
       return thunkAPI.rejectWithValue((error as Error).message);
@@ -41,9 +55,19 @@ export const addJob = createAsyncThunk<Job, Omit<Job, 'id' | 'createdAt'>>(
   'jobs/addJob',
   async (job, thunkAPI) => {
     try {
-      const response = await addJobAPI(job);
+      const response = await fetch(URL + '/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(job),
+      });
 
-      return response;
+      if (!response.ok) {
+        throw new Error('failed to add new job.try later');
+      }
+
+      const newJob = await response.json();
+
+      return newJob;
     } catch (error) {
       return thunkAPI.rejectWithValue((error as Error).message);
     }
@@ -52,8 +76,18 @@ export const addJob = createAsyncThunk<Job, Omit<Job, 'id' | 'createdAt'>>(
 
 export const updateJob = createAsyncThunk<number, Job>('jobs/updateJob', async (job, thunkAPI) => {
   try {
-    await updateJobAPI(job.id, job);
-    return job.id;
+    const response = await fetch(`${URL}/${job.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(job),
+    });
+
+    if (!response.ok) {
+      throw new Error('failed update job');
+    }
+
+    const data = await response.json();
+    return data;
   } catch (error) {
     return thunkAPI.rejectWithValue((error as Error).message);
   }
