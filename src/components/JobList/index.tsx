@@ -3,7 +3,7 @@ import type { Job } from '../../types/JobType';
 
 type Props = {
   jobs: Job[];
-  onDeleteClick: (id: number) => void;
+  onDeleteClick: (id: string) => void;
   setEditingJob: (job: Job) => void;
 };
 

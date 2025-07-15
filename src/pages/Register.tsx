@@ -3,7 +3,11 @@ import Icon from '../components/Icon';
 import { ErrorMessage, Field, Form, Formik, type FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../app/hooks';
+import { registerUser } from '../features/auth/authSlice';
+import { useEffect } from 'react';
+import { AxiosError } from 'axios';
 
 const LoginSchema = Yup.object({
   name: Yup.string()
@@ -16,30 +20,43 @@ const LoginSchema = Yup.object({
 });
 
 export default function Register() {
-  const handleSubmit = (
-    values: { name: string; email: string; password: string },
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      navigate('/dashboard');
+    }
+  });
+
+  const handleSubmit = async (
+    { name: username, email, password }: { name: string; email: string; password: string },
     actions: FormikHelpers<{ name: string; email: string; password: string }>,
   ) => {
-    console.log('login values', values);
-    // api request
-    if (values.name === 'Ivan') {
-      actions.setStatus({ success: 'Login successful!' });
-    } else {
-      actions.setStatus({ error: 'Invalid credentials' });
-    }
+    actions.setSubmitting(true);
 
-    setTimeout(() => {
-      actions.setStatus(null);
+    try {
+      await dispatch(registerUser({ username, email, password })).unwrap();
+
+      navigate('/dashboard');
+    } catch (e) {
+      actions.setStatus({
+        error: (e as AxiosError<{ message: string }>).message || 'faled register user',
+      });
+    } finally {
       actions.resetForm();
-    }, 2000);
-    actions.setSubmitting(false);
+      actions.setStatus(null);
+      actions.setSubmitting(false);
+    }
   };
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      exit={{ opacity: 0, y: -30 }} // if <AnimatePresence>
+      exit={{ opacity: 0, y: -30 }}
       role="main"
       className="d-flex justify-content-center align-items-center vh-100 overflow-hidden"
     >
@@ -89,10 +106,6 @@ export default function Register() {
                   {isSubmitting ? 'Submiting in...' : 'Submit'}
                 </Button>
               </div>
-
-              {status?.success && (
-                <div className="alert alert-success mt-3 text-center">{status.success}</div>
-              )}
 
               {status?.error && (
                 <div className="alert alert-danger mt-3 text-center">{status.error}</div>

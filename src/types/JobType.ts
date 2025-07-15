@@ -1,5 +1,6 @@
 export type Job = {
-  id: number;
+  id: string;
+  userId: string;
   position: string;
   company: string;
   status: 'applied' | 'interview' | 'rejected';

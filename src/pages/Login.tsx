@@ -1,9 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { motion } from 'framer-motion';
 import Icon from '../components/Icon';
 import { ErrorMessage, Field, Form, Formik, type FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { loginUser } from '../features/auth/authSlice';
+import { useEffect } from 'react';
+import isValideToken from '../utils/isValidToken';
 
 const LoginSchema = Yup.object({
   email: Yup.string().email('Invalid email address').required('Email is required'),
@@ -11,21 +16,31 @@ const LoginSchema = Yup.object({
 });
 
 export default function Login() {
-  const handleSubmit = (
+  const dispatch = useAppDispatch();
+  const token = useAppSelector((state) => state.auth.token);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isValideToken(token)) {
+      navigate('/dashboard');
+    }
+  }, [navigate, token]);
+
+  const handleSubmit = async (
     values: { email: string; password: string },
     actions: FormikHelpers<{ email: string; password: string }>,
   ) => {
-    if (values.email === 'admin@mail.com' && values.password === '123456') {
-      actions.setStatus({ success: 'Login successful!' });
-    } else {
-      actions.setStatus({ error: 'Invalid credentials' });
-    }
+    try {
+      await dispatch(loginUser(values)).unwrap();
 
-    setTimeout(() => {
+      navigate('/dashboard');
+    } catch (e) {
+      actions.setStatus({ error: 'Invalid credentials' });
+    } finally {
       actions.setStatus(null);
       actions.resetForm();
-    }, 2000);
-    actions.setSubmitting(false);
+      actions.setSubmitting(false);
+    }
   };
   return (
     <motion.div

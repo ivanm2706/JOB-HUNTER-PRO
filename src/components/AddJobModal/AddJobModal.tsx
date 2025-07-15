@@ -2,6 +2,7 @@ import { Modal, Button, Form as BSForm } from 'react-bootstrap';
 import { Formik, Form, Field, ErrorMessage, type FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import type { Job } from '../../types/JobType';
+import { useAppSelector } from '../../app/hooks';
 
 type Props = {
   show: boolean;
@@ -16,11 +17,14 @@ const AddJobSchema = Yup.object().shape({
 });
 
 export default function AddJobModal({ show, onClose, onAdd }: Props) {
+  const user = useAppSelector((state) => state.auth.user);
+
   const handleAddJob = async (values: Partial<Job>, actions: FormikHelpers<Partial<Job>>) => {
     const newJob: Omit<Job, 'id' | 'createdAt'> = {
       position: values.position || '',
       company: values.company || '',
       status: values.status as Job['status'],
+      userId: user?.id || '',
     };
 
     try {

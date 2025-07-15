@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import Register from './pages/Register';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
+import ProtectedRoute from './components/ProtectedRout';
 
 function App() {
   return (
@@ -14,7 +15,14 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </main>
     </div>

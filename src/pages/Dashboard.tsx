@@ -14,6 +14,8 @@ import SearchFilterForm from '../components/SearchFilterForms';
 import Footer from '../components/Footer';
 import { filteredJobs } from '../utils/filteredJobs';
 import Pagination from '../components/Pagination';
+import { logout } from '../features/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 type ToastType = {
   message: string;
@@ -28,9 +30,11 @@ const toastInit: ToastType = {
 };
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
   const { jobs, loading, error } = useAppSelector((state) => state.jobs);
-  const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
+  const [selectedJobId, setSelectedJobId] = useState<string>('');
   const [toast, setToast] = useState<ToastType>(toastInit);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
@@ -42,11 +46,16 @@ export default function Dashboard() {
   // edit
   const [editingJob, setEditingJob] = useState<Job | null>(null);
 
-  useEffect(() => {
-    dispatch(fetchJobs());
-  }, [dispatch]);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const handleDeleteClick = (id: number) => {
+  const getAllJobs = () => {
+    if (user) dispatch(fetchJobs());
+  };
+  useEffect(() => {
+    getAllJobs();
+  }, [dispatch, user]);
+
+  const handleDeleteClick = (id: string) => {
     setSelectedJobId(id);
     setDeleteModal(true);
   };
@@ -64,7 +73,8 @@ export default function Dashboard() {
           variant: 'success',
           show: true,
         });
-        dispatch(fetchJobs());
+
+        getAllJobs();
       })
       .catch(() => {
         setToast({
@@ -75,8 +85,9 @@ export default function Dashboard() {
       })
       .finally(() => {
         setDeleteModal(false);
-        setSelectedJobId(null);
+        setSelectedJobId('');
         setIsDeleting(false);
+        setCurrentPage(1);
       });
   };
 
@@ -90,7 +101,7 @@ export default function Dashboard() {
         .unwrap()
         .then(() => {
           setToast({ message: 'New job added!', variant: 'success', show: true });
-          dispatch(fetchJobs());
+          getAllJobs();
         });
     } catch (e) {
       setToast({ message: 'Failed to add job', variant: 'danger', show: true });
@@ -106,7 +117,7 @@ export default function Dashboard() {
         .then(() => {
           setToast({ message: 'Job is updated!', variant: 'success', show: true });
         });
-      dispatch(fetchJobs());
+      getAllJobs();
     } catch (e) {
       setToast({ message: 'Failed to update job', variant: 'danger', show: true });
     } finally {
@@ -114,12 +125,9 @@ export default function Dashboard() {
     }
   };
 
-  const [currentPage, setCurrentPage] = useState(1);
   const jobsPerPage = 6;
-
   const filtered = filteredJobs(jobs, searchTerm, filterStatus);
   const totalPages = Math.ceil(filtered.length / jobsPerPage);
-
   const paginatedJobs = filtered.slice((currentPage - 1) * jobsPerPage, currentPage * jobsPerPage);
 
   const handlePageChange = (page: number) => {
@@ -129,7 +137,8 @@ export default function Dashboard() {
   };
 
   const handleSignOut = () => {
-    console.log('Signed out');
+    dispatch(logout());
+    navigate('/');
   };
 
   return (
@@ -186,7 +195,7 @@ export default function Dashboard() {
         show={showDeleteModal}
         onClose={() => setDeleteModal(false)}
         onConfirm={handleConfirmDelete}
-        jobTitle={jobs.find((j) => j.id === Number(selectedJobId))?.position || ''}
+        jobTitle={jobs.find((j) => j.id === selectedJobId)?.position || ''}
         isDeleting={isDeleting}
       />
 

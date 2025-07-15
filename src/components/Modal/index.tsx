@@ -1,11 +1,4 @@
 export default function Modal({ children }: { children: string }) {
-  // const myModal = document.getElementById('myModal');
-  // const myInput = document.getElementById('myInput');
-
-  // myModal.addEventListener('shown.bs.modal', () => {
-  //   myInput.focus();
-  // });
-
   return (
     <>
       <div className="modal-dialog modal-dialog-centered">{children}</div>
